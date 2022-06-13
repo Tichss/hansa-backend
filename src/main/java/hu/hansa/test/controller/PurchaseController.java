@@ -23,7 +23,6 @@ public class PurchaseController {
     private final ConversionService conversionService;
     private final PurchaseService purchaseService;
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping
     PageableResponse<PurchaseDto> getAll(final @RequestParam int page) {
         return ConversionUtil.getPageableResponse(
@@ -32,25 +31,23 @@ public class PurchaseController {
                 conversionService);
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @GetMapping("/{id}")
     PurchaseDto get(final @PathVariable Long id) {
         return conversionService.convert(purchaseService.getByIdOrThrow(id), PurchaseDto.class);
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @DeleteMapping("/{id}")
     void delete(final @PathVariable Long id) {
         final Purchase purchase = purchaseService.getByIdOrThrow(id);
         purchaseService.delete(purchase.getId());
     }
 
-    @CrossOrigin(origins = "http://localhost:8081")
     @PostMapping
     void add(final @Valid @RequestBody PurchaseDto purchaseDto) {
         final Purchase purchase = conversionService.convert(purchaseDto, Purchase.class);
         System.out.println("Shop " + purchase.getShop().getName());
-        System.out.println("Product " + purchase.getPurchaseProducts().stream().findFirst().get().getProduct().getName());
+        purchase.getPurchaseProducts().stream().forEach(purchaseProduct -> purchaseProduct.setPurchase(purchase));
+        // System.out.println("Product " + purchase.getPurchaseProducts().stream().findFirst().get().getPurchase());
         purchaseService.save(purchase);
     }
 }
