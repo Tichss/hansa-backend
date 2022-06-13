@@ -1,7 +1,9 @@
 package hu.hansa.test.configuration;
 
 
+import hu.hansa.test.converter.purchase.PurchaseDtoToPurchase;
 import hu.hansa.test.converter.purchase.PurchaseToPurchaseDto;
+import hu.hansa.test.converter.purchaseproduct.PurchaseProductDtoToPurchaseProduct;
 import hu.hansa.test.converter.purchaseproduct.PurchaseProductToPurchaseProductDto;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
@@ -21,7 +23,9 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addFormatters(final FormatterRegistry registry) {
         registry.addConverter(new PurchaseToPurchaseDto((ConversionService) registry));
+        registry.addConverter(new PurchaseDtoToPurchase((ConversionService) registry));
         registry.addConverter(new PurchaseProductToPurchaseProductDto((ConversionService) registry));
+        registry.addConverter(new PurchaseProductDtoToPurchaseProduct((ConversionService) registry));
         // Use it when need to add dependency to the converter
     }
 }

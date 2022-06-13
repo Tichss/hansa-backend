@@ -4,16 +4,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = (Purchase.TABLE_NAME))
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Purchase {
 
     public static final String TABLE_NAME = "purchase";
@@ -23,7 +25,7 @@ public class Purchase {
     private Long id;
 
     @CreatedDate
-    @Column(columnDefinition= "TIMESTAMP")
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
     private Integer price;
@@ -36,7 +38,7 @@ public class Purchase {
     private Shop shop; //where this buyed from
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.PERSIST, mappedBy = TABLE_NAME)
-    private List<PurchaseProduct> purchaseProducts;
+    private Set<PurchaseProduct> purchaseProducts;
 
     public Purchase map(Purchase other) {
         return this;
