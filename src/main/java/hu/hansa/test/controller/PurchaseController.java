@@ -43,11 +43,10 @@ public class PurchaseController {
     }
 
     @PostMapping
-    void add(final @Valid @RequestBody PurchaseDto purchaseDto) {
+    PurchaseDto add(final @Valid @RequestBody PurchaseDto purchaseDto) {
         final Purchase purchase = conversionService.convert(purchaseDto, Purchase.class);
-        System.out.println("Shop " + purchase.getShop().getName());
         purchase.getPurchaseProducts().stream().forEach(purchaseProduct -> purchaseProduct.setPurchase(purchase));
-        // System.out.println("Product " + purchase.getPurchaseProducts().stream().findFirst().get().getPurchase());
         purchaseService.save(purchase);
+        return conversionService.convert(purchase, PurchaseDto.class);
     }
 }
