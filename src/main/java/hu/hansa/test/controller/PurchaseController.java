@@ -24,11 +24,38 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @GetMapping
-    PageableResponse<PurchaseDto> getAll(final @RequestParam int page) {
-        return ConversionUtil.getPageableResponse(
-                purchaseService.getAll(PageRequest.of(page - 1, 20, Sort.by("createdAt").descending())),
+    PageableResponse<PurchaseDto> getAll(final @RequestParam int page, final @RequestParam int orderMode) {
+        if (orderMode == 1) {
+            return ConversionUtil.getPageableResponse(
+                    purchaseService.getAll(PageRequest.of(page - 1, 20, Sort.by("createdAt").descending())),
+                    PurchaseDto.class,
+                    conversionService);
+        } else if (orderMode == 2) {
+            return ConversionUtil.getPageableResponse(
+                purchaseService.getAll(PageRequest.of(page - 1, 20, Sort.by("createdAt").ascending())),
                 PurchaseDto.class,
                 conversionService);
+        } else if (orderMode == 3) {
+            return ConversionUtil.getPageableResponse(
+                purchaseService.getAll(PageRequest.of(page - 1, 20, Sort.by("price").descending())),
+                PurchaseDto.class,
+                conversionService);
+        } else if (orderMode == 4) {
+            return ConversionUtil.getPageableResponse(
+                purchaseService.getAll(PageRequest.of(page - 1, 20, Sort.by("price").ascending())),
+                PurchaseDto.class,
+                conversionService);
+        } else if (orderMode == 5) {
+            return ConversionUtil.getPageableResponse(
+                purchaseService.getAll(PageRequest.of(page - 1, 20, Sort.by("shop.name").ascending())),
+                PurchaseDto.class,
+                conversionService);
+        } else {
+            return ConversionUtil.getPageableResponse(
+                purchaseService.getAll(PageRequest.of(page - 1, 20, Sort.by("shop.name").descending())),
+                PurchaseDto.class,
+                conversionService);
+        }
     }
 
     @GetMapping("/{id}")

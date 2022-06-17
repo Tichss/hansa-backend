@@ -35,7 +35,7 @@ public class Purchase {
     private Long partnerId;
 
     @ManyToOne
-    private Shop shop; //where this buyed from
+    private Shop shop;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.PERSIST, mappedBy = TABLE_NAME)
     private Set<PurchaseProduct> purchaseProducts;
