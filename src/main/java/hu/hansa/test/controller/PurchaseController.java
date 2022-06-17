@@ -3,6 +3,7 @@ import hu.hansa.test.dto.PageableResponse;
 import hu.hansa.test.dto.ProductDto;
 import hu.hansa.test.dto.PurchaseDto;
 import hu.hansa.test.persistence.entity.Purchase;
+import hu.hansa.test.service.PurchaseProductService;
 import hu.hansa.test.service.PurchaseService;
 import hu.hansa.test.util.ConversionUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -22,6 +24,7 @@ public class PurchaseController {
 
     private final ConversionService conversionService;
     private final PurchaseService purchaseService;
+    private final PurchaseProductService purchaseProductService;
 
     @GetMapping
     PageableResponse<PurchaseDto> getAll(final @RequestParam int page, final @RequestParam int orderMode) {
@@ -73,6 +76,17 @@ public class PurchaseController {
     PurchaseDto add(final @Valid @RequestBody PurchaseDto purchaseDto) {
         final Purchase purchase = conversionService.convert(purchaseDto, Purchase.class);
         purchase.getPurchaseProducts().stream().forEach(purchaseProduct -> purchaseProduct.setPurchase(purchase));
+        purchaseService.save(purchase);
+        return conversionService.convert(purchase, PurchaseDto.class);
+    }
+
+    @PutMapping
+    PurchaseDto update(final @Valid @RequestBody PurchaseDto purchaseDto) {
+        final Purchase purchase = conversionService.convert(purchaseDto, Purchase.class);
+        purchase.setId(purchaseDto.getId());
+        purchase.getPurchaseProducts().stream().forEach(purchaseProduct -> purchaseProduct.setPurchase(purchase));
+        purchase.getPurchaseProducts().stream().forEach(purchaseProduct -> purchaseProductService.save(purchaseProduct));
+        purchase.setCreatedAt(LocalDateTime.now());
         purchaseService.save(purchase);
         return conversionService.convert(purchase, PurchaseDto.class);
     }
